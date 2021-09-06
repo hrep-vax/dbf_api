@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\LoginUser;
 use App\Http\Requests\ShowEmailAvailability;
-use App\Http\Requests\ShowHrepIdAvailability;
 use App\Http\Requests\StoreUser;
 use App\Models\User;
 use Illuminate\Http\Response;
