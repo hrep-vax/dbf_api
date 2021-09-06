@@ -24,6 +24,10 @@ class CreateUsersTable extends Migration
             $table->string('mobile_number')->nullable();
             $table->string('sex')->nullable();
             $table->string('profile_picture_url')->nullable();
+            $table->string('home_address')->nullable();
+            $table->string('barangay')->nullable();
+            $table->string('city')->nullable();
+            $table->string('region')->nullable();
             $table->timestamps();
         });
     }

@@ -76,6 +76,10 @@ class User extends Authenticatable
         'sex',
         'profile_picture_url',
         'birthday',
+        'home_address',
+        'barangay',
+        'city',
+        'region'
     ];
 
     /**

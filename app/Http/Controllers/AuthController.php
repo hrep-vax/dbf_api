@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\LoginUser;
+use App\Http\Requests\ShowEmailAvailability;
+use App\Http\Requests\ShowHrepIdAvailability;
 use App\Http\Requests\StoreUser;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 
 class AuthController extends Controller
 {
@@ -54,53 +56,25 @@ class AuthController extends Controller
      */
     public function logout()
     {
-       Auth::user()->currentAccessToken()->delete();
+        Auth::user()->currentAccessToken()->delete();
 
-       return response(204);
+        return response(204);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return Response
-     */
-    public function store(Request $request)
+    public function showHrepIdAvailability(ShowHrepIdAvailability $request)
     {
-        //
+        $hrepIdExists = User::find($request['hrep_id']);
+
+        if (!$hrepIdExists) return response(['hrep_id_available' => true], 200);
+        else return response(['hrep_id_available' => false], 200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
+    public function showEmailAvailability(ShowEmailAvailability $request)
     {
-        //
+        $emailExists = User::where('email', '=', $request['email'])->first();
+
+        if (!$emailExists) return response(['email_available' => true], 200);
+        else return response(['email_available' => false], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

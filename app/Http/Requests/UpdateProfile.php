@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
-class StoreUser extends FormRequest
+class UpdateProfile extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,16 +30,13 @@ class StoreUser extends FormRequest
         $todayDate = date('Y-m-d');
 
         return [
-            'hrep_id' => ['required', 'string', 'unique:users,hrep_id', 'max:255'],
-            'password' => ['required', 'string', 'confirmed', 'min:6'],
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'unique:users,email,' . Auth::user()->hrep_id . ',hrep_id', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:users,email', 'max:255'],
             'mobile_number' => ['nullable', 'regex:/^(\+63)\d{10}$/'],
             'sex' => ['nullable', 'string', 'in:male,female'],
             'birthday' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:' . $todayDate],
-            'profile_picture_url' => ['nullable', 'string', 'max:255'],
             'home_address' => ['nullable', 'string', 'max:255'],
             'barangay' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
