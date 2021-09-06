@@ -6,9 +6,7 @@ use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\StoreTestResource;
 use App\Http\Requests\UpdateTestRequest;
 use App\Models\TestResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\MessageBag;
 
 class TestResourceController extends Controller
 {
@@ -84,9 +82,8 @@ class TestResourceController extends Controller
         $resource = TestResource::find($id);
 
         if (!$resource) {
-            $msgBag = new MessageBag();
-            $msgBag->add('id', 'Could not find resource with given id.');
-            return throw ApiErrorResponse::createErrorResponse('Resource not found', $msgBag, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND);
+            $message = ['id' => 'Could not find resource with given id.'];
+            return throw ApiErrorResponse::createErrorResponse('Resource not found', $message, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
         }
 
         return $resource;

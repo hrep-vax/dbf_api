@@ -3,10 +3,14 @@
 namespace App\Exceptions;
 
 use App\Helpers\ApiErrorResponse;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Util\Exception;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -51,7 +55,7 @@ class Handler extends ExceptionHandler
      * @param String $errorCode
      * @return JsonResponse
      */
-    protected function invalidJson($request, ValidationException $exception, String $errorCode = 'SERVER_ERROR')
+    protected function invalidJson($request, ValidationException $exception, string $errorCode = 'SERVER_ERROR')
     {
         return response()->json([
             'errorCode' => $errorCode,
@@ -73,5 +77,23 @@ class Handler extends ExceptionHandler
         }
 
         return $errors;
+    }
+
+    /**
+     * Convert an authentication exception into a response.
+     *
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        return $request->expectsJson()
+            ? response()->json(
+                ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::$UNAUTHENTICATED_CODE, 'errors' => NULL],
+                401)
+
+            // No implementation for APIs
+            : redirect()->guest($exception->redirectTo() ?? route('login'));
     }
 }

@@ -2,15 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Exceptions\Handler;
 use App\Helpers\ApiErrorResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\MessageBag;
 
-class StoreTestResource extends FormRequest
+class StoreUser extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,9 +26,19 @@ class StoreTestResource extends FormRequest
      */
     public function rules()
     {
+        $todayDate = date('Y-m-d');
+
         return [
-            'name' => ['required', 'max:255', 'unique:test_resources,name'],
-            'description' => ['required', 'max:255']
+            'hrep_id' => ['required', 'string', 'unique:users,hrep_id','max:255'],
+            'password' => ['required', 'string', 'confirmed', 'min:6'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'email' => ['required', 'email', 'unique:users,email', 'max:255'],
+            'mobile_number' => ['nullable', 'regex:/^(\+63)\d{10}$/'],
+            'sex' => ['nullable', 'string', 'in:male,female'],
+            'birthday' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:' . $todayDate],
+            'profile_picture_url' => ['nullable', 'active_url', 'max:255'],
         ];
     }
 
@@ -42,13 +49,7 @@ class StoreTestResource extends FormRequest
      */
     public function messages()
     {
-        return [
-            'name.required' => 'The `name` field is required.',
-            'name.unique' => 'The `name` field is already taken.',
-            'name.max' => 'The `name` field must not exceed 255 characters.',
-            'description.required' => 'The `description` field is required.',
-            'description.max' => 'The `description` field must not exceed 255 characters.',
-        ];
+        return [];
     }
 
     /**

@@ -15594,7 +15594,18 @@
      
 }
 
-        namespace Facade\Ignition\Facades { 
+        namespace App\Helpers { 
+            /**
+     * 
+     *
+     */ 
+        class ApiErrorResponse {
+         
+    }
+     
+}
+
+    namespace Facade\Ignition\Facades { 
             /**
      * Class Flare.
      *
@@ -19265,6 +19276,7 @@ namespace  {
             class URL extends \Illuminate\Support\Facades\URL {}
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
+            class ApiErrorResponse extends \App\Helpers\ApiErrorResponse {}
             class Flare extends \Facade\Ignition\Facades\Flare {}
      
 }

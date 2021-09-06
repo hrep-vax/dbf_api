@@ -50,10 +50,15 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSex($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @mixin Eloquent
+ * @property string|null $birthday
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBirthday($value)
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $primaryKey = 'hrep_id';
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -61,9 +66,16 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'name',
+        'hrep_id',
+        'first_name',
+        'last_name',
+        'middle_name',
         'email',
         'password',
+        'mobile_number',
+        'sex',
+        'profile_picture_url',
+        'birthday',
     ];
 
     /**
@@ -72,8 +84,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token'
     ];
 
     /**
@@ -82,6 +93,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+
     ];
 }

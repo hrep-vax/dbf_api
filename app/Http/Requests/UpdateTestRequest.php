@@ -55,9 +55,9 @@ class UpdateTestRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        $errorMsg = "A validation error has occurred.";
-        $msgBag = $validator->getMessageBag();
+        $errorDesc = "A validation error has occurred.";
+        $message = $validator->getMessageBag()->toArray();
 
-        throw ApiErrorResponse::createErrorResponse($errorMsg, $msgBag, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
+        throw ApiErrorResponse::createErrorResponse($errorDesc, $message, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
     }
 }

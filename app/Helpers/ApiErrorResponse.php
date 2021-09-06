@@ -2,30 +2,29 @@
 
 namespace App\Helpers;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\MessageBag;
-use Ramsey\Uuid\Type\Integer;
 
 class ApiErrorResponse
 {
     public static string $VALIDATION_ERROR_CODE = 'VALIDATION_ERROR';
-    public static string $RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
+    public static string $RESOURCE_NOT_FOUND_CODE = 'RESOURCE_NOT_FOUND_ERROR';
+    public static string $INVALID_CREDENTIALS_CODE = 'INVALID_CREDENTIALS_ERROR';
+    public static string $UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
 
     /***
      * Creates and returns a custom API error message
-     * @param String $message
-     * @param MessageBag $msgBag
+     * @param String $description
+     * @param array|null $message
      * @param int $statusCode
      * @param String $errorCode
      * @return HttpResponseException
      */
-    public static function createErrorResponse(String $message, MessageBag $msgBag, int $statusCode ,String $errorCode = 'SERVER_ERROR')
+    public static function createErrorResponse(String $description, ?Array $message, int $statusCode ,String $errorCode = 'SERVER_ERROR')
     {
         $response = [
             'errorCode' => $errorCode,
-            'message' => $message,
-            'errors' => $msgBag
+            'message' => $description,
+            'errors' => $message
         ];
 
         return new HttpResponseException(response()->json($response)->setStatusCode($statusCode));
