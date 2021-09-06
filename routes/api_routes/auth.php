@@ -11,8 +11,5 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 /** POST    /api/auth/login    Log-out the current auth user    Private **/
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout'])->name('logout');
 
-/** POST    /api/auth/show-hrep-id-availability    Check if hrep_id is available for assignment    Public **/
-Route::post('show-hrep-id-availability', [AuthController::class, 'showHrepIdAvailability'])->name('show-hrep-id-availability');
-
 /** POST    /api/auth/show-email-availability    Check if email is available for assignment    Public **/
 Route::post('show-email-availability', [AuthController::class, 'showEmailAvailability'])->name('show-email-availability');

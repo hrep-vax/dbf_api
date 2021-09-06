@@ -30,7 +30,7 @@ class UpdateProfile extends FormRequest
         $todayDate = date('Y-m-d');
 
         return [
-            'email' => ['nullable', 'email', 'unique:users,email,' . Auth::user()->hrep_id . ',hrep_id', 'max:255'],
+            'email' => ['nullable', 'email', 'unique:users,email,' . Auth::user()['id'], 'max:255'],
             'first_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],

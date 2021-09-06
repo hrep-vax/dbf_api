@@ -30,7 +30,6 @@ class StoreUser extends FormRequest
         $todayDate = date('Y-m-d');
 
         return [
-            'hrep_id' => ['required', 'string', 'unique:users,hrep_id', 'max:255'],
             'password' => ['required', 'string', 'confirmed', 'min:6'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],

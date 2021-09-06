@@ -25,12 +25,15 @@ class AuthController extends Controller
         $request['password'] = Hash::make($request['password']);
         $newUser = User::create($request->all());
 
-        Auth::attempt(['hrep_id' => $request['hrep_id'], 'password' => $request['password']]);
+        Auth::attempt(['email' => $request['email'], 'password' => $request['password']]);
 
         $token = $newUser->createToken('api_token')->plainTextToken;
         $type = 'Bearer';
 
-        return response(['user' => $newUser, 'access_token' => $token, 'token_type' => $type], 201);
+        // TODO: Implement Spatie
+        $roles = ['regular'];
+
+        return response(['user' => $newUser, 'roles' => $roles, 'access_token' => $token, 'token_type' => $type], 201);
     }
 
     /**
@@ -41,12 +44,16 @@ class AuthController extends Controller
     public function login(LoginUser $request)
     {
         if (!Auth::attempt($request->all())) {
-            return throw ApiErrorResponse::createErrorResponse('Invalid hrep_id or password.', NULL, 401, ApiErrorResponse::$INVALID_CREDENTIALS_CODE);
+            return throw ApiErrorResponse::createErrorResponse('Invalid email or password.', NULL, 401, ApiErrorResponse::$INVALID_CREDENTIALS_CODE);
         }
 
         $token = Auth::user()->createToken('api_token')->plainTextToken;
         $type = 'Bearer';
-        return response(['user' => Auth::user(), 'access_token' => $token, 'token_type' => $type]);
+
+        // TODO: Implement Spatie
+        $roles = ['regular'];
+
+        return response(['user' => Auth::user(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type]);
     }
 
     /**
@@ -58,15 +65,7 @@ class AuthController extends Controller
     {
         Auth::user()->currentAccessToken()->delete();
 
-        return response(204);
-    }
-
-    public function showHrepIdAvailability(ShowHrepIdAvailability $request)
-    {
-        $hrepIdExists = User::find($request['hrep_id']);
-
-        if (!$hrepIdExists) return response(['hrep_id_available' => true], 200);
-        else return response(['hrep_id_available' => false], 200);
+        return response()->noContent();
     }
 
     public function showEmailAvailability(ShowEmailAvailability $request)

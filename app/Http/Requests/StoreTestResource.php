@@ -36,22 +36,6 @@ class StoreTestResource extends FormRequest
     }
 
     /**
-     * Custom message for validation
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'name.required' => 'The `name` field is required.',
-            'name.unique' => 'The `name` field is already taken.',
-            'name.max' => 'The `name` field must not exceed 255 characters.',
-            'description.required' => 'The `description` field is required.',
-            'description.max' => 'The `description` field must not exceed 255 characters.',
-        ];
-    }
-
-    /**
      * Custom validation JSON response
      * @throws HttpResponseException
      */

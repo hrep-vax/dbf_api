@@ -27,7 +27,7 @@ class LoginUser extends FormRequest
     public function rules()
     {
         return [
-            'hrep_id' => ['required'],
+            'email' => ['required', 'email'],
             'password' => ['required'],
         ];
     }

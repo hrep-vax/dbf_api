@@ -57,8 +57,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $primaryKey = 'hrep_id';
-    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -66,7 +64,6 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-        'hrep_id',
         'first_name',
         'last_name',
         'middle_name',
