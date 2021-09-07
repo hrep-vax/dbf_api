@@ -104,12 +104,15 @@ class AuthController extends Controller
         $spa_ui_link = env('SPA_RESET_PASSWORD_URL');
         $reset_pass_link = $spa_ui_link . '?token=' . $token;
 
-        try {
-            Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
-            return response(['message' => 'Password reset email sent to ' . $user['email']]);
-        } catch (\Exception $_e) {
-            return throw ApiErrorResponse::createErrorResponse('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
-        }
+//        try {
+//            Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
+//            return response(['message' => 'Password reset email sent to ' . $user['email']]);
+//        } catch (\Exception $_e) {
+//            return throw ApiErrorResponse::createErrorResponse('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
+//        }
+
+        Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
+        return response(['message' => 'Password reset email sent to ' . $user['email']]);
 
     }
 
