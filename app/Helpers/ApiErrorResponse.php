@@ -9,6 +9,7 @@ class ApiErrorResponse
     public static string $VALIDATION_ERROR_CODE = 'VALIDATION_ERROR';
     public static string $RESOURCE_NOT_FOUND_CODE = 'RESOURCE_NOT_FOUND_ERROR';
     public static string $INVALID_CREDENTIALS_CODE = 'INVALID_CREDENTIALS_ERROR';
+    public static string $SMTP_ERROR_CODE = 'SMTP_ERROR';
     public static string $UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
 
     /***

@@ -9,10 +9,10 @@ Route::get('', [TestResourceController::class, 'index'])->name('fetch-test-resou
 Route::post('', [TestResourceController::class, 'store'])->name('store-test-resource');
 
 /** GET    /api/test-resources/{id}    Show test resource    Private **/
-Route::get('/{id}', [TestResourceController::class, 'show'])->name('show-test-resource');
+Route::get('{id}', [TestResourceController::class, 'show'])->name('show-test-resource');
 
 /** PUT    /api/test-resources/{id}    Show test resource    Private **/
-Route::put('/{id}', [TestResourceController::class, 'update'])->name('update-test-resource');
+Route::put('{id}', [TestResourceController::class, 'update'])->name('update-test-resource');
 
 /** DELETE    /api/test-resources/{id}    Show test resource    Private **/
-Route::delete('/{id}', [TestResourceController::class, 'destroy'])->name('delete-test-resource');
+Route::delete('{id}', [TestResourceController::class, 'destroy'])->name('delete-test-resource');
