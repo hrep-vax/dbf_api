@@ -9,6 +9,7 @@ use App\Http\Requests\ShowEmailAvailability;
 use App\Http\Requests\StoreForgotPassword;
 use App\Http\Requests\StoreUser;
 use App\Mail\PasswordReset;
+use App\Mail\PasswordResetOtp;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -91,10 +92,13 @@ class AuthController extends Controller
      * @param StoreForgotPassword $request
      * @return Response
      */
-    public function spaForgotPassword(StoreForgotPassword $request)
+    public function forgotPassword(StoreForgotPassword $request)
     {
         $user = User::where('email', '=', $request['email'])->first();
-        $token = $this->generateToken();
+        $type = $request['type'];
+
+        if ($type === 'spa' || !$type) $token = $this->generateToken();
+        else $token = $this->generateToken('mobile');
 
         DB::table('password_resets')->updateOrInsert(
             ['email' => $user->email],
@@ -105,7 +109,9 @@ class AuthController extends Controller
         $reset_pass_link = $spa_ui_link . '?token=' . $token;
 
         try {
-            Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
+            if ($type === 'spa' || !$type) Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
+            else Mail::to($user->email)->send(new PasswordResetOtp($token));
+
             return response(['message' => 'Password reset email sent to ' . $user['email']]);
         } catch (\Exception $_e) {
             throw ApiErrorResponse::createErrorResponse('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
@@ -145,14 +151,19 @@ class AuthController extends Controller
      * Generate forgot password token
      * @return string
      */
-    private function generateToken()
+    private function generateToken(String $type = NULL)
     {
-        $key = config('app.key');
+        if (!$type || $type === 'spa') {
+            $key = config('app.key');
 
-        if (Str::startsWith($key, 'base64:')) {
-            $key = base64_decode(substr($key, 7));
+            if (Str::startsWith($key, 'base64:')) {
+                $key = base64_decode(substr($key, 7));
+            }
+            return hash_hmac('sha256', Str::random(40), $key);
+
+        } else {
+            return Str::upper(Str::random(6));
         }
-        return hash_hmac('sha256', Str::random(40), $key);
     }
 
 }

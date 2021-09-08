@@ -14,8 +14,8 @@ Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logou
 /** POST    /api/auth/show-email-availability    Check if email is available for assignment    Public **/
 Route::post('show-email-availability', [AuthController::class, 'showEmailAvailability'])->name('show-email-availability');
 
-/** POST    /api/auth/forgot-password    Create a reset password request    Public **/
-Route::post('forgot-password', [AuthController::class, 'spaForgotPassword'])->name('forgot-password');
+/** POST    /api/auth/forgot-password?type='spa'|'mobile'    Create a reset password request    Public **/
+Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
 /** POST    /api/auth/reset-password    Reset password via forgot password token   Public **/
 Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
