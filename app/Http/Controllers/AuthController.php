@@ -58,8 +58,8 @@ class AuthController extends Controller
         $token = Auth::user()->createToken('api_token')->plainTextToken;
         $type = 'Bearer';
 
-        // TODO: Implement Spatie
-        $roles = ['regular'];
+        // Get roles
+        $roles = Auth::user()->getRoleNames();
 
         return response(['user' => Auth::user(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type]);
     }
