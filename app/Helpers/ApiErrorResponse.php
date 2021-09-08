@@ -11,6 +11,7 @@ class ApiErrorResponse
     public static string $INVALID_CREDENTIALS_CODE = 'INVALID_CREDENTIALS_ERROR';
     public static string $SMTP_ERROR_CODE = 'SMTP_ERROR';
     public static string $UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
+    public static string $UNAUTHORIZED_CODE = 'UNAUTHORIZED_ERROR';
 
     /***
      * Creates and returns a custom API error message

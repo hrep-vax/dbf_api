@@ -13,6 +13,7 @@ use App\Mail\PasswordResetOtp;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -36,10 +37,11 @@ class AuthController extends Controller
         $token = $newUser->createToken('api_token')->plainTextToken;
         $type = 'Bearer';
 
-        // TODO: Implement Spatie
-        $roles = ['regular'];
+        // Assign regular user permissions
+        $newUser->assignRole('regular');
+        $rolesNames = $newUser->getRoleNames();
 
-        return response(['user' => $newUser, 'roles' => $roles, 'access_token' => $token, 'token_type' => $type], 201);
+        return response(['user' => $newUser, 'roles' => $rolesNames, 'access_token' => $token, 'token_type' => $type], 201);
     }
 
     /**
@@ -151,7 +153,7 @@ class AuthController extends Controller
      * Generate forgot password token
      * @return string
      */
-    private function generateToken(String $type = NULL)
+    private function generateToken(string $type = NULL)
     {
         if (!$type || $type === 'spa') {
             $key = config('app.key');
@@ -165,5 +167,4 @@ class AuthController extends Controller
             return Str::upper(Str::random(6));
         }
     }
-
 }

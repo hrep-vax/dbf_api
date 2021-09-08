@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Util\Exception;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -42,9 +43,16 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        // Override Spatie's UnauthorizedException message
+        $this->renderable(function (UnauthorizedException $e, $request) {
+            return response()->json([
+                'message'  => $e->getMessage(),
+                'errorCode' => ApiErrorResponse::$UNAUTHORIZED_CODE,
+                'errors' => NULL
+            ], 403);
         });
+
+        $this->reportable(function (Throwable $e) {});
     }
 
     /**
