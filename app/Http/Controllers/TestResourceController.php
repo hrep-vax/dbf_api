@@ -6,10 +6,13 @@ use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\StoreTestResource;
 use App\Http\Requests\UpdateTestRequest;
 use App\Models\TestResource;
+use App\Traits\ApiResponder;
 use Illuminate\Http\Response;
 
 class TestResourceController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +21,7 @@ class TestResourceController extends Controller
     public function index()
     {
         $resources = TestResource::all();
-        return response(['resources' => $resources]);
+        return $this->success(['resources' => $resources], 200);
     }
 
     /**
@@ -30,7 +33,7 @@ class TestResourceController extends Controller
     public function store(StoreTestResource $request)
     {
         $newResource = TestResource::create($request->all());
-        return response(['newResource' => $newResource], 201);
+        return $this->success(['newResource' => $newResource], 201);
     }
 
     /**
@@ -43,7 +46,7 @@ class TestResourceController extends Controller
     {
         $resource = $this->findResourceById($id);
 
-        return response(['resource' => $resource], 200);
+        return $this->success(['resource' => $resource], 200);
     }
 
     /**
@@ -59,7 +62,7 @@ class TestResourceController extends Controller
 
         $resource->update($request->all());
 
-        return response(['updatedResources' => $resource], 200);
+        return $this->success(['updatedResources' => $resource], 200);
     }
 
     /**
@@ -74,7 +77,7 @@ class TestResourceController extends Controller
 
         $deletedResource->delete();
 
-        return response(['deletedResource' => $deletedResource], 200);
+        return $this->success(['deletedResource' => $deletedResource], 200);
     }
 
     private function findResourceById($id)
@@ -83,7 +86,7 @@ class TestResourceController extends Controller
 
         if (!$resource) {
             $message = ['id' => 'Could not find resource with given id.'];
-            throw ApiErrorResponse::createErrorResponse('Resource not found', $message, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
+            $this->throwError('Resource not found', $message, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
         }
 
         return $resource;

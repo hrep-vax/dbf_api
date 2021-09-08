@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiErrorResponse;
+use App\Traits\ApiResponder;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Response;
 
 class FileStorageController extends Controller
 {
+    use ApiResponder;
+
     /**
      * @throws FileNotFoundException
      */
@@ -25,13 +28,11 @@ class FileStorageController extends Controller
         $path = storage_path('app/public/uploads/profile_pictures/' . $fileName);
 
         if (!File::exists($path)) {
-            throw ApiErrorResponse::createErrorResponse('Cannot resolve profile picture filepath', NULL, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
+            $this->throwError('Cannot resolve profile picture filepath', NULL, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
         }
 
         $file = File::get($path);
         $type = File::mimeType($path);
-        $response = Response::make($file, 200);
-        $response->header("Content-Type", $type);
-        return $response;
+        return $this->success($file, 200, ['Content-Type' => $type]);
     }
 }

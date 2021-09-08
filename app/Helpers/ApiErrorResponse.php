@@ -15,18 +15,18 @@ class ApiErrorResponse
 
     /***
      * Creates and returns a custom API error message
-     * @param String $description
-     * @param array|null $message
+     * @param string $message
+     * @param array|null $errors
      * @param int $statusCode
      * @param String $errorCode
      * @return HttpResponseException
      */
-    public static function createErrorResponse(String $description, ?Array $message, int $statusCode ,String $errorCode = 'SERVER_ERROR')
+    public static function createErrorResponse(string $message, ?array $errors, int $statusCode, string $errorCode = 'SERVER_ERROR')
     {
         $response = [
             'errorCode' => $errorCode,
-            'message' => $description,
-            'errors' => $message
+            'message' => $message,
+            'errors' => $errors
         ];
 
         return new HttpResponseException(response()->json($response)->setStatusCode($statusCode));

@@ -11,9 +11,9 @@ use App\Http\Requests\StoreUser;
 use App\Mail\PasswordReset;
 use App\Mail\PasswordResetOtp;
 use App\Models\User;
+use App\Traits\ApiResponder;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +22,8 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Register a new user
      * @param StoreUser $request
@@ -41,7 +43,7 @@ class AuthController extends Controller
         $newUser->assignRole('regular');
         $rolesNames = $newUser->getRoleNames();
 
-        return response(['user' => $newUser, 'roles' => $rolesNames, 'access_token' => $token, 'token_type' => $type], 201);
+        return $this->success(['user' => $newUser, 'roles' => $rolesNames, 'access_token' => $token, 'token_type' => $type], 201);
     }
 
     /**
@@ -52,7 +54,7 @@ class AuthController extends Controller
     public function login(LoginUser $request)
     {
         if (!Auth::attempt($request->all())) {
-            throw ApiErrorResponse::createErrorResponse('Invalid email or password.', NULL, 401, ApiErrorResponse::$INVALID_CREDENTIALS_CODE);
+            $this->throwError('Invalid email or password.', NULL, 401, ApiErrorResponse::$INVALID_CREDENTIALS_CODE);
         }
 
         $token = Auth::user()->createToken('api_token')->plainTextToken;
@@ -61,7 +63,7 @@ class AuthController extends Controller
         // Get roles
         $roles = Auth::user()->getRoleNames();
 
-        return response(['user' => Auth::user(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type]);
+        return $this->success(['user' => Auth::user(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type], 200);
     }
 
     /**
@@ -73,7 +75,7 @@ class AuthController extends Controller
     {
         Auth::user()->currentAccessToken()->delete();
 
-        return response()->noContent();
+        return $this->success(NULL, 204);
     }
 
     /**
@@ -85,8 +87,8 @@ class AuthController extends Controller
     {
         $emailExists = User::where('email', '=', $request['email'])->first();
 
-        if (!$emailExists) return response(['email_available' => true], 200);
-        else return response(['email_available' => false], 200);
+        if (!$emailExists) return $this->success(['email_available' => true], 200);
+        else return $this->success(['email_available' => false], 200);
     }
 
     /**
@@ -113,12 +115,11 @@ class AuthController extends Controller
         try {
             if ($type === 'spa' || !$type) Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
             else Mail::to($user->email)->send(new PasswordResetOtp($token));
-
-            return response(['message' => 'Password reset email sent to ' . $user['email']]);
         } catch (\Exception $_e) {
-            throw ApiErrorResponse::createErrorResponse('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
+            $this->throwError('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
         }
 
+        return $this->success(['message' => 'Password reset email sent to ' . $user['email']], 200);
     }
 
     /**
@@ -135,7 +136,7 @@ class AuthController extends Controller
 
         if (!$resetRequest) {
             $errDescription = 'Incorrect email or reset password token. A new password reset request may have been issued or this request has already been used.';
-            throw ApiErrorResponse::createErrorResponse($errDescription, NULL, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
+            $this->throwError($errDescription, NULL, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
         }
 
         // Change current password
@@ -146,7 +147,7 @@ class AuthController extends Controller
         // Remove password reset request from the table
         DB::table('password_resets')->where('email', $request['email'])->delete();
 
-        return response(['message' => 'Password reset successful.'], 200);
+        return $this->success(['message' => 'Password reset successful.'], 200);
     }
 
     /**

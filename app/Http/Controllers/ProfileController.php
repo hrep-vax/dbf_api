@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdatePassword;
 use App\Http\Requests\UpdateProfile;
 use App\Http\Requests\UploadProfilePicture;
-use Illuminate\Http\Request;
+use App\Traits\ApiResponder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
+    use ApiResponder;
+
     /**
      * Show current auth user profile
      *
@@ -21,7 +22,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return response(['user' => $user], 200);
+        return $this->success(['user' => $user], 200);
     }
 
     /**
@@ -34,7 +35,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $user->update($request->all());
 
-        return response(['user' => $user], 200);
+        return $this->success(['user' => $user], 200);
     }
 
     /**
@@ -48,7 +49,7 @@ class ProfileController extends Controller
         $request['password'] = Hash::make($request['password']);
         $user->update(['password' => $request['password']]);
 
-        return response()->noContent();
+        return $this->success(NULL, 204);
     }
 
     /**
@@ -64,7 +65,7 @@ class ProfileController extends Controller
         $user->profile_picture_url = '//storage//' . $filePath;
         $user->save();
 
-        return response(['user' => $user], 200);
+        return $this->success(['user' => $user], 200);
     }
 
 }
