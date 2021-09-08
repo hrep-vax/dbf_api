@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Framework\MockObject\Api;
 use PHPUnit\Util\Exception;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,14 +61,13 @@ class Handler extends ExceptionHandler
      *
      * @param Request $request
      * @param ValidationException $exception
-     * @param String $errorCode
      * @return JsonResponse
      */
-    protected function invalidJson($request, ValidationException $exception, string $errorCode = 'SERVER_ERROR')
+    protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json([
-            'errorCode' => $errorCode,
-            'message' => $exception->getMessage(),
+            'errorCode' => ApiErrorResponse::$VALIDATION_ERROR_CODE,
+            'message' => 'A validation error has occurred.',
             'errors' => $this->transformErrors($exception),
         ], $exception->status);
     }
@@ -75,15 +75,10 @@ class Handler extends ExceptionHandler
     // Transform the error messages,
     private function transformErrors(ValidationException $exception)
     {
-        $errors = [];
-
+        $errors = (object) [];
         foreach ($exception->errors() as $field => $message) {
-            $errors[] = [
-                'field' => $field,
-                'message' => $message[0],
-            ];
+            $errors->{$field} = $message;
         }
-
         return $errors;
     }
 

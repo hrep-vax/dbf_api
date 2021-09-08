@@ -44,16 +44,4 @@ class UpdatePassword extends FormRequest
             'old_password.is_current_password' => 'The old password field is incorrect.',
         ];
     }
-
-    /**
-     * Custom validation JSON response
-     * @throws HttpResponseException
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        $errorDesc = "A validation error has occurred.";
-        $message = $validator->getMessageBag()->toArray();
-
-        throw ApiErrorResponse::createErrorResponse($errorDesc, $message, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
-    }
 }

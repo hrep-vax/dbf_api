@@ -48,16 +48,4 @@ class UpdateTestRequest extends FormRequest
             'description.max' => 'The `description` field must not exceed 255 characters.',
         ];
     }
-
-    /**
-     * Custom validation JSON response
-     * @throws HttpResponseException
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        $errorDesc = "A validation error has occurred.";
-        $message = $validator->getMessageBag()->toArray();
-
-        throw ApiErrorResponse::createErrorResponse($errorDesc, $message, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
-    }
 }
