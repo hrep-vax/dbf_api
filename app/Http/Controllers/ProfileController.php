@@ -22,7 +22,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return $this->success(['user' => $user], 200);
+        return $this->success(['user' => $user, 'roles' => $user->getRoleNames()], 200);
     }
 
     /**
@@ -35,7 +35,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $user->update($request->all());
 
-        return $this->success(['user' => $user, 'roles' => $user->getRoleNames()], 200);
+        return $this->success(['user' => $user], 200);
     }
 
     /**
