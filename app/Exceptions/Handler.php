@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Helpers\ApiErrorResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -110,6 +111,10 @@ class Handler extends ExceptionHandler
             return response()->json(
                 ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::$UNKNOWN_ROUTE_CODE, 'errors' => NULL],
                 404);
+        } else if ($e instanceof ThrottleRequestsException) {
+            return response()->json(
+                ['message' => 'Too many requests.', 'errorCode' => ApiErrorResponse::$TOO_MANY_REQUESTS_CODE, 'errors' => NULL],
+                429);
         }
         return parent::render($request, $e);
     }
