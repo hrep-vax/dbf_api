@@ -12,6 +12,7 @@ class ApiErrorResponse
     public static string $SMTP_ERROR_CODE = 'SMTP_ERROR';
     public static string $UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
     public static string $UNAUTHORIZED_CODE = 'UNAUTHORIZED_ERROR';
+    public static string $UNKNOWN_ROUTE_CODE = 'UNKNOWN_ROUTE_ERROR';
 
     /***
      * Creates and returns a custom API error message

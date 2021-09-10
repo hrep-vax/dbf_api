@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -80,7 +81,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Convert an authentication exception into a response.
+     * Modify the unauthenticated response.
      *
      * @param Request $request
      * @param AuthenticationException $exception
@@ -88,12 +89,27 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return $request->expectsJson()
-            ? response()->json(
+        return response()->json(
                 ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::$UNAUTHENTICATED_CODE, 'errors' => NULL],
-                401)
+                401);
+    }
 
-            // No implementation for APIs
-            : redirect()->guest($exception->redirectTo() ?? route('login'));
+
+    /**
+     * Modify the Route not found response.
+     *
+     * @param Request $request
+     * @param Throwable $e
+     * @return Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof NotFoundHttpException) {
+            return response()->json(
+                ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::$UNKNOWN_ROUTE_CODE, 'errors' => NULL],
+                404);
+        }
+        return parent::render($request, $e);
     }
 }
