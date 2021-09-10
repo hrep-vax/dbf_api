@@ -12,7 +12,6 @@ namespace App\Traits;
 */
 
 use App\Helpers\ApiErrorResponse;
-use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
 

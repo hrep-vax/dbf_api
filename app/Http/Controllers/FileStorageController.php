@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiErrorResponse;
 use App\Traits\ApiResponder;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\Response;
 
 class FileStorageController extends Controller
 {
@@ -16,6 +15,7 @@ class FileStorageController extends Controller
 
     /**
      * @throws FileNotFoundException
+     * @return Response
      */
     public function showProfilePicture()
     {

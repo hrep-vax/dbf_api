@@ -3,14 +3,11 @@
 namespace App\Exceptions;
 
 use App\Helpers\ApiErrorResponse;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use PHPUnit\Framework\MockObject\Api;
-use PHPUnit\Util\Exception;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
