@@ -30,6 +30,6 @@ class PasswordResetOtp extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.auth.password_reset_otp')->subject('WebApp Kit One-time Password Reset Code');
+        return $this->markdown('emails.auth.password_reset_otp')->subject('Scaffold.IO Kit One-time Password Reset Code');
     }
 }
