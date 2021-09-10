@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -105,7 +106,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        if ($e instanceof NotFoundHttpException) {
+        if ($e instanceof NotFoundHttpException || $e instanceof MethodNotAllowedHttpException) {
             return response()->json(
                 ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::$UNKNOWN_ROUTE_CODE, 'errors' => NULL],
                 404);
