@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ApiErrorResponse;
 use App\Rules\SameAsCurrentPassword;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdatePassword extends FormRequest
 {

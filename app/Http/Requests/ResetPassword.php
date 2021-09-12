@@ -2,10 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ApiErrorResponse;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ResetPassword extends FormRequest
 {

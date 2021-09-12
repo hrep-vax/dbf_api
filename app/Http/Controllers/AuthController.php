@@ -13,11 +13,11 @@ use App\Mail\PasswordResetOtp;
 use App\Models\User;
 use App\Traits\ApiResponder;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
