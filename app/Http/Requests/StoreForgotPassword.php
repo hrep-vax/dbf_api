@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTestResource extends FormRequest
+class StoreForgotPassword extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,20 @@ class StoreTestResource extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:test_resources,name'],
-            'description' => ['required', 'string', 'max:255']
+            'email' => ['required', 'email', 'exists:users,email'],
+            'type' => ['nullable', 'in:spa,mobile']
+        ];
+    }
+
+    /**
+     * Custom message for validation
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'type.in' => 'The type parameter value must be `spa` or `mobile`',
         ];
     }
 }

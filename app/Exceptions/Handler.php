@@ -3,14 +3,16 @@
 namespace App\Exceptions;
 
 use App\Helpers\ApiErrorResponse;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use PHPUnit\Util\Exception;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -42,9 +44,16 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        // Override Spatie's UnauthorizedException message
+        $this->renderable(function (UnauthorizedException $e, $request) {
+            return response()->json([
+                'message'  => $e->getMessage(),
+                'errorCode' => ApiErrorResponse::UNAUTHORIZED_CODE,
+                'errors' => NULL
+            ], 403);
         });
+
+        $this->reportable(function (Throwable $e) {});
     }
 
     /**
@@ -52,14 +61,13 @@ class Handler extends ExceptionHandler
      *
      * @param Request $request
      * @param ValidationException $exception
-     * @param String $errorCode
      * @return JsonResponse
      */
-    protected function invalidJson($request, ValidationException $exception, string $errorCode = 'SERVER_ERROR')
+    protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json([
-            'errorCode' => $errorCode,
-            'message' => $exception->getMessage(),
+            'errorCode' => ApiErrorResponse::VALIDATION_ERROR_CODE,
+            'message' => 'A validation error has occurred.',
             'errors' => $this->transformErrors($exception),
         ], $exception->status);
     }
@@ -67,20 +75,15 @@ class Handler extends ExceptionHandler
     // Transform the error messages,
     private function transformErrors(ValidationException $exception)
     {
-        $errors = [];
-
+        $errors = (object) [];
         foreach ($exception->errors() as $field => $message) {
-            $errors[] = [
-                'field' => $field,
-                'message' => $message[0],
-            ];
+            $errors->{$field} = $message;
         }
-
         return $errors;
     }
 
     /**
-     * Convert an authentication exception into a response.
+     * Modify the unauthenticated response.
      *
      * @param Request $request
      * @param AuthenticationException $exception
@@ -88,12 +91,31 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        return $request->expectsJson()
-            ? response()->json(
-                ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::$UNAUTHENTICATED_CODE, 'errors' => NULL],
-                401)
+        return response()->json(
+                ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::UNAUTHENTICATED_CODE, 'errors' => NULL],
+                401);
+    }
 
-            // No implementation for APIs
-            : redirect()->guest($exception->redirectTo() ?? route('login'));
+
+    /**
+     * Modify the Route not found response.
+     *
+     * @param Request $request
+     * @param Throwable $e
+     * @return Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof NotFoundHttpException || $e instanceof MethodNotAllowedHttpException) {
+            return response()->json(
+                ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::UNKNOWN_ROUTE_CODE, 'errors' => NULL],
+                404);
+        } else if ($e instanceof ThrottleRequestsException) {
+            return response()->json(
+                ['message' => 'Too many requests.', 'errorCode' => ApiErrorResponse::TOO_MANY_REQUESTS_CODE, 'errors' => NULL],
+                429);
+        }
+        return parent::render($request, $e);
     }
 }

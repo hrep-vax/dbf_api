@@ -2,11 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ApiErrorResponse;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
 
 class StoreUser extends FormRequest
 {
@@ -57,17 +53,5 @@ class StoreUser extends FormRequest
             'mobile_number.regex' => 'The mobile number should follow this format: +63XXXXXXXXXX.',
             'sex.in' => 'Valid sex values are `male` and `female`'
         ];
-    }
-
-    /**
-     * Custom validation JSON response
-     * @throws HttpResponseException
-     */
-    protected function failedValidation(Validator $validator)
-    {
-        $errorDesc = "A validation error has occurred.";
-        $message = $validator->getMessageBag()->toArray();
-
-        throw ApiErrorResponse::createErrorResponse($errorDesc, $message, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
     }
 }
