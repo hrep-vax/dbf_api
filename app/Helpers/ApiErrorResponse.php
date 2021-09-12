@@ -6,14 +6,15 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ApiErrorResponse
 {
-    public static string $VALIDATION_ERROR_CODE = 'VALIDATION_ERROR';
-    public static string $RESOURCE_NOT_FOUND_CODE = 'RESOURCE_NOT_FOUND_ERROR';
-    public static string $INVALID_CREDENTIALS_CODE = 'INVALID_CREDENTIALS_ERROR';
-    public static string $SMTP_ERROR_CODE = 'SMTP_ERROR';
-    public static string $UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
-    public static string $UNAUTHORIZED_CODE = 'UNAUTHORIZED_ERROR';
-    public static string $UNKNOWN_ROUTE_CODE = 'UNKNOWN_ROUTE_ERROR';
-    public static string $TOO_MANY_REQUESTS_CODE = 'TOO_MANY_REQUESTS_ERROR';
+    const VALIDATION_ERROR_CODE = 'VALIDATION_ERROR';
+    const RESOURCE_NOT_FOUND_CODE = 'RESOURCE_NOT_FOUND_ERROR';
+    const INVALID_CREDENTIALS_CODE = 'INVALID_CREDENTIALS_ERROR';
+    const SMTP_ERROR_CODE = 'SMTP_ERROR';
+    const UNAUTHENTICATED_CODE = 'UNAUTHENTICATED_ERROR';
+    const UNAUTHORIZED_CODE = 'UNAUTHORIZED_ERROR';
+    const UNKNOWN_ROUTE_CODE = 'UNKNOWN_ROUTE_ERROR';
+    const TOO_MANY_REQUESTS_CODE = 'TOO_MANY_REQUESTS_ERROR';
+    const SERVER_ERROR_CODE = 'SERVER_ERROR';
 
     /***
      * Creates and returns a custom API error message
@@ -23,7 +24,7 @@ class ApiErrorResponse
      * @param String $errorCode
      * @return HttpResponseException
      */
-    public static function createErrorResponse(string $message, ?array $errors, int $statusCode, string $errorCode = 'SERVER_ERROR')
+    public static function createErrorResponse(string $message, ?array $errors, int $statusCode, string $errorCode = ApiErrorResponse::SERVER_ERROR_CODE)
     {
         $response = [
             'errorCode' => $errorCode,
@@ -31,6 +32,6 @@ class ApiErrorResponse
             'errors' => $errors
         ];
 
-        return new HttpResponseException(response()->json($response)->setStatusCode($statusCode));
+        return new HttpResponseException(response($response, $statusCode));
     }
 }

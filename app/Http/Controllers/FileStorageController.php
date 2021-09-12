@@ -20,7 +20,7 @@ class FileStorageController extends Controller
     public function showProfilePicture()
     {
         if (!Auth::user()->profile_picture_url) {
-            throw ApiErrorResponse::createErrorResponse('User has no associated profile picture', NULL, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
+            throw ApiErrorResponse::createErrorResponse('User has no associated profile picture', NULL, 404, ApiErrorResponse::RESOURCE_NOT_FOUND_CODE);
         }
 
         $fileName = pathinfo(Auth::user()->profile_picture_url)['basename'];
@@ -28,7 +28,7 @@ class FileStorageController extends Controller
         $path = storage_path('app/public/uploads/profile_pictures/' . $fileName);
 
         if (!File::exists($path)) {
-            $this->throwError('Cannot resolve profile picture filepath', NULL, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
+            $this->throwError('Cannot resolve profile picture filepath', NULL, 404, ApiErrorResponse::RESOURCE_NOT_FOUND_CODE);
         }
 
         $file = File::get($path);

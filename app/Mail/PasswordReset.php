@@ -31,6 +31,7 @@ class PasswordReset extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.auth.password_reset')->subject('Scaffold.IO One-time Password Reset Link');
+        return $this->markdown('emails.auth.password_reset')
+            ->subject( config('app.name') . ' One-time Password Reset Link');
     }
 }

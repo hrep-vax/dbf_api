@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (UnauthorizedException $e, $request) {
             return response()->json([
                 'message'  => $e->getMessage(),
-                'errorCode' => ApiErrorResponse::$UNAUTHORIZED_CODE,
+                'errorCode' => ApiErrorResponse::UNAUTHORIZED_CODE,
                 'errors' => NULL
             ], 403);
         });
@@ -66,7 +66,7 @@ class Handler extends ExceptionHandler
     protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json([
-            'errorCode' => ApiErrorResponse::$VALIDATION_ERROR_CODE,
+            'errorCode' => ApiErrorResponse::VALIDATION_ERROR_CODE,
             'message' => 'A validation error has occurred.',
             'errors' => $this->transformErrors($exception),
         ], $exception->status);
@@ -92,7 +92,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         return response()->json(
-                ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::$UNAUTHENTICATED_CODE, 'errors' => NULL],
+                ['message' => $exception->getMessage(), 'errorCode' => ApiErrorResponse::UNAUTHENTICATED_CODE, 'errors' => NULL],
                 401);
     }
 
@@ -109,11 +109,11 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof NotFoundHttpException || $e instanceof MethodNotAllowedHttpException) {
             return response()->json(
-                ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::$UNKNOWN_ROUTE_CODE, 'errors' => NULL],
+                ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::UNKNOWN_ROUTE_CODE, 'errors' => NULL],
                 404);
         } else if ($e instanceof ThrottleRequestsException) {
             return response()->json(
-                ['message' => 'Too many requests.', 'errorCode' => ApiErrorResponse::$TOO_MANY_REQUESTS_CODE, 'errors' => NULL],
+                ['message' => 'Too many requests.', 'errorCode' => ApiErrorResponse::TOO_MANY_REQUESTS_CODE, 'errors' => NULL],
                 429);
         }
         return parent::render($request, $e);

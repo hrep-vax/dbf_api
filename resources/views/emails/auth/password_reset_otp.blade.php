@@ -7,5 +7,5 @@ You received this email because you requested to reset your password. Copy the s
 <br/>
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ config('app.name') . ' Team' }}
 @endcomponent

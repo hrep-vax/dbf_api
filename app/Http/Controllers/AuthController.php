@@ -54,7 +54,7 @@ class AuthController extends Controller
     public function login(LoginUser $request)
     {
         if (!Auth::attempt($request->all())) {
-            $this->throwError('Invalid email or password.', NULL, 401, ApiErrorResponse::$INVALID_CREDENTIALS_CODE);
+            $this->throwError('Invalid email or password.', NULL, 401, ApiErrorResponse::INVALID_CREDENTIALS_CODE);
         }
 
         $token = Auth::user()->createToken('api_token')->plainTextToken;
@@ -116,7 +116,7 @@ class AuthController extends Controller
             if ($type === 'spa' || !$type) Mail::to($user->email)->send(new PasswordReset($reset_pass_link));
             else Mail::to($user->email)->send(new PasswordResetOtp($token));
         } catch (\Exception $_e) {
-            $this->throwError('Failed to deliver email', null, 502, ApiErrorResponse::$SMTP_ERROR_CODE);
+            $this->throwError('Failed to deliver email', null, 502, ApiErrorResponse::SMTP_ERROR_CODE);
         }
 
         return $this->success(['message' => 'Password reset email sent to ' . $user['email']], 200);
@@ -136,7 +136,7 @@ class AuthController extends Controller
 
         if (!$resetRequest) {
             $errDescription = 'Incorrect email or reset password token. A new password reset request may have been issued or this request has already been used.';
-            $this->throwError($errDescription, NULL, 422, ApiErrorResponse::$VALIDATION_ERROR_CODE);
+            $this->throwError($errDescription, NULL, 422, ApiErrorResponse::VALIDATION_ERROR_CODE);
         }
 
         // Change current password

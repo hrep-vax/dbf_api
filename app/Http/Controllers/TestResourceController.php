@@ -86,7 +86,7 @@ class TestResourceController extends Controller
 
         if (!$resource) {
             $message = ['id' => 'Could not find resource with given id.'];
-            $this->throwError('Resource not found', $message, 404, ApiErrorResponse::$RESOURCE_NOT_FOUND_CODE);
+            $this->throwError('Resource not found', $message, 404, ApiErrorResponse::RESOURCE_NOT_FOUND_CODE);
         }
 
         return $resource;
