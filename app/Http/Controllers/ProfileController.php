@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\UpdatePassword;
 use App\Http\Requests\UpdateProfile;
 use App\Http\Requests\UploadProfilePicture;
@@ -61,6 +62,12 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+
+        // Check the filename length
+        if (strlen($fileName) > 150) {
+            $this->throwError('The uploaded filename is too long.', ['image' => ['The filename is too long.']], 422, ApiErrorResponse::VALIDATION_ERROR_CODE);
+        }
+
         $filePath = $request->file('image')->storeAs('uploads/profile_pictures', $fileName, 'public');
         $user->profile_picture_url = '//storage//' . $filePath;
         $user->save();
