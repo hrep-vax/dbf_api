@@ -10,7 +10,7 @@ Scaffold.IO API is a Laravel 8 RESTFul starter kit for SPA and mobile clients. T
 ## Set up your local development environment
 - Create a **.env** file from the **.env.example** that came with this project
 - In the **.env** file, update the **APP_NAME**, **APP_URL**, the **DB_** variables, and the MAIL variables if you decide to use a different test mailing service or account. You may also change the **SPA_RESET_PASSWORD_URL** if you're spinning a different URL for your SPA.
-- Locate your **php.ini** file and change the value **upload_max_size** to **8M**. See this [guide](https://devanswers.co/ubuntu-php-php-ini-configuration-file/) if you're having trouble finding the directory of your php.ini file
+- Locate your **php.ini** file and change the value **upload_max_filesize** to **8M**. See this [guide](https://devanswers.co/ubuntu-php-php-ini-configuration-file/) if you're having trouble finding the directory of your php.ini file
 - Run the command `composer install`  to install all the project and dev dependencies
 - Save the **.env** file and run the command `php artisan key:generate`
 - Run the command `php artisan migrate` to create all the necessary tables of the database
