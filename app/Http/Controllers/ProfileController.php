@@ -6,6 +6,7 @@ use App\Helpers\ApiErrorResponse;
 use App\Http\Requests\UpdatePassword;
 use App\Http\Requests\UpdateProfile;
 use App\Http\Requests\UploadProfilePicture;
+use App\Models\User;
 use App\Traits\ApiResponder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,7 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return $this->success(['user' => $user, 'roles' => $user->getRoleNames()], 200);
+        return $this->success(['user' => $user->flattenUserInfo(), 'roles' => $user->getRoleNames()], 200);
     }
 
     /**
@@ -34,9 +35,13 @@ class ProfileController extends Controller
     public function update(UpdateProfile $request)
     {
         $user = Auth::user();
-        $user->update($request->all());
+        $user->update($request->only('email'));
+        $user->userInfo()->update($request->except('email'));
 
-        return $this->success(['user' => $user], 200);
+        // Re-assignment to run eager loading of user_info
+        $user = User::find($user->id);
+
+        return $this->success(['user' => $user->flattenUserInfo()], 200);
     }
 
     /**
@@ -69,10 +74,10 @@ class ProfileController extends Controller
         }
 
         $filePath = $request->file('image')->storeAs('uploads/profile_pictures', $fileName, 'public');
-        $user->profile_picture_url = '//storage//' . $filePath;
+        $user->userInfo->profile_picture_url = '//storage//' . $filePath;
         $user->save();
 
-        return $this->success(['user' => $user], 200);
+        return $this->success(['user' => $user->flattenUserInfo()], 200);
     }
 
 }

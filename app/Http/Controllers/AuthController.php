@@ -32,7 +32,11 @@ class AuthController extends Controller
     public function register(StoreUser $request)
     {
         $request['password'] = Hash::make($request['password']);
-        $newUser = User::create($request->all());
+        $newUser = User::create($request->only('email', 'password'));
+        $newUser->userInfo()->create($request->except('email', 'password', 'password_confirmation'));
+
+        // Re-assignment to run eager loading of user_info
+        $newUser = User::find($newUser->id);
 
         Auth::attempt(['email' => $request['email'], 'password' => $request['password']]);
 
@@ -43,7 +47,7 @@ class AuthController extends Controller
         $newUser->assignRole('regular');
         $rolesNames = $newUser->getRoleNames();
 
-        return $this->success(['user' => $newUser, 'roles' => $rolesNames, 'access_token' => $token, 'token_type' => $type], 201);
+        return $this->success(['user' => $newUser->flattenUserInfo(), 'roles' => $rolesNames, 'access_token' => $token, 'token_type' => $type], 201);
     }
 
     /**
@@ -63,7 +67,7 @@ class AuthController extends Controller
         // Get roles
         $roles = Auth::user()->getRoleNames();
 
-        return $this->success(['user' => Auth::user(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type], 200);
+        return $this->success(['user' => Auth::user()->flattenUserInfo(), 'roles' => $roles, 'access_token' => $token, 'token_type' => $type], 200);
     }
 
     /**
