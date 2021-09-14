@@ -74,8 +74,9 @@ class ProfileController extends Controller
         }
 
         $filePath = $request->file('image')->storeAs('uploads/profile_pictures', $fileName, 'public');
-        $user->userInfo->profile_picture_url = '//storage//' . $filePath;
-        $user->save();
+        $user->userInfo()->update(['profile_picture_url' => '//storage//' . $filePath]);
+
+        $user = User::find($user->id);
 
         return $this->success(['user' => $user->flattenUserInfo()], 200);
     }
