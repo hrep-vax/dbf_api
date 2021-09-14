@@ -8,6 +8,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -112,6 +113,7 @@ class Handler extends ExceptionHandler
                 ['message' => 'Route not found.', 'errorCode' => ApiErrorResponse::UNKNOWN_ROUTE_CODE, 'errors' => NULL],
                 404);
         } else if ($e instanceof ThrottleRequestsException) {
+            Log::alert('HTTP rate limit reached.');
             return response()->json(
                 ['message' => 'Too many requests.', 'errorCode' => ApiErrorResponse::TOO_MANY_REQUESTS_CODE, 'errors' => NULL],
                 429);

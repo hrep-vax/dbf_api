@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class ApiErrorResponse
 {
@@ -31,6 +32,8 @@ class ApiErrorResponse
             'message' => $message,
             'errors' => $errors
         ];
+
+        if ($statusCode >= 500) Log::error($message);
 
         return new HttpResponseException(response($response, $statusCode));
     }
