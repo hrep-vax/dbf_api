@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -12,6 +13,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -57,9 +60,9 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $barangay
  * @property string|null $city
  * @property string|null $region
- * @property-read Collection|\Spatie\Permission\Models\Permission[] $permissions
+ * @property-read Collection|Permission[] $permissions
  * @property-read int|null $permissions_count
- * @property-read Collection|\Spatie\Permission\Models\Role[] $roles
+ * @property-read Collection|Role[] $roles
  * @property-read int|null $roles_count
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
@@ -68,6 +71,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHomeAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRegion($value)
+ * @property-read UserInfo|null $userInfo
  */
 class User extends Authenticatable
 {
@@ -105,11 +109,44 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Eager loading with a related model
      *
-     * @var array
+     * @var string[]
      */
-    protected $casts = [
+    protected $with = ['userInfo'];
 
-    ];
+    /**
+     * Every User model has exactly one UserInfo
+     *
+     * @return HasOne
+     */
+    public function userInfo()
+    {
+        return $this->hasOne(UserInfo::class);
+    }
+
+    /**
+     * Move the user_info fields to the root node (User).
+     * Only used when adding the model to a response
+     * @return User
+     */
+    public function flattenUserInfo()
+    {
+        $userInfo = $this->userInfo;
+        unset($this->userInfo);
+
+        $this->first_name =  $userInfo->first_name;
+        $this->last_name =  $userInfo->last_name;
+        $this->middle_name =  $userInfo->middle_name;
+        $this->mobile_number =  $userInfo->mobile_number;
+        $this->sex =  $userInfo->sex;
+        $this->birthday =  $userInfo->birthday;
+        $this->profile_picture_url =  $userInfo->profile_picture_url;
+        $this->home_address =  $userInfo->home_address;
+        $this->barangay =  $userInfo->barangay;
+        $this->city =  $userInfo->city;
+        $this->region =  $userInfo->region;
+
+        return $this;
+    }
 }
