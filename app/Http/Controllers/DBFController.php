@@ -21,13 +21,13 @@ class DBFController extends Controller
 
     $table = new TableReader(resource_path('dbf\CHECKS.DBF'));
     $records = [];
+    $record_entry = [];
     $column_headers = $table->getColumns();
-
     while ($record = $table->nextRecord()) {
-      $record_entry = [];
       foreach ($column_headers as $column) {
         try {
-          $record_entry = [$column->getName(), $record->$column];
+          $record_value = $record->get($column->getName());
+          $record_entry[$column->getName()] = $record_value;
         } catch (Throwable $e) {
         }
         array_push($records, $record_entry);
