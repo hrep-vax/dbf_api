@@ -31,8 +31,8 @@ class DBFController extends Controller
           $record_entry[$column->getName()] = $record_value;
         } catch (Throwable $e) {
         }
-        array_push($records, $record_entry);
       }
+      array_push($records, $record_entry);
     }
     return $this->success(['dbf' => $records], 200);
   }
@@ -78,7 +78,7 @@ class DBFController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show(Request $request, $id)
+  public function show(Request $request)
   {
     $table = new TableReader(resource_path('dbf\CHECKS.DBF'));
 
@@ -86,14 +86,29 @@ class DBFController extends Controller
 
     $records = [];
     $record_entry = [];
-    $column_headers = $table->getColumns();
     while ($record = $table->nextRecord()) {
-      foreach ($column_headers as $column) {
-        $record_value = $record->get($column->getName());
+      $record_value = $record->get('code');
+      if ($emp_id == $record_value) {
+        $record_entry["voucher"] = $record->get('voucher');
+        $record_entry["check"] = $record->get('check');
+        $record_entry["code"] = $record->get('code');
+        $record_entry["oblig"] = $record->get('oblig');
+        $record_entry["obj_clas"] = $record->get('oblig');
+        $record_entry["che_date"] = $record->get('che_date');
+        $record_entry["date_sign"] = $record->get('date_sign');
+        $record_entry["rec_date"] = $record->get('rec_date');
+        $record_entry["rec_opis"] = $record->get('rec_opis');
+        $record_entry["ret_date"] = $record->get('ret_date');
+        $record_entry["ret_time"] = $record->get('ret_time');
+        $record_entry["rel_date"] = $record->get('rel_date');
+        $record_entry["rel_name"] = $record->get('rel_name');
+        $record_entry["or_number"] = $record->get('or_number');
+        $record_entry["amount"] = $record->get('amount');
+        array_push($records, $record_entry);
       }
     }
 
-    return $this->success(['dbf' => $record_value], 200);
+    return $this->success(['dbf' => $records], 200);
   }
 
   /**
