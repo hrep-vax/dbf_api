@@ -69,6 +69,9 @@ class DBFController extends Controller
     $record->set('or_number', $request->or_number);
     $record->set('amount', $request->amount);
     $table->writeRecord();
+    $table->save();
+
+
     return $this->success(['message' => 'Record Added Successfully'], 200);
   }
 
