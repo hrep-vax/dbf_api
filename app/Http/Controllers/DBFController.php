@@ -39,7 +39,7 @@ class DBFController extends Controller
           ///$record_value = convert_from_latin1_to_utf8_recursively($record->get($column->getName()));
           $record_value = utf8_encode($record->get($column->getName()));
 
-
+          //comment
           $record_entry[$column->getName()] = $record_value;
         } catch (Throwable $e) {
         }
