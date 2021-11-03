@@ -16,3 +16,7 @@ Route::middleware(['auth:sanctum'])->prefix('/test-resources')
 /** DBF routes */
 Route::middleware(['auth:sanctum'])->prefix('/dbf')
   ->group(base_path('routes/api_routes/dbf.php'));
+
+/** Check routes */
+Route::middleware(['auth:sanctum'])->prefix('/check')
+  ->group(base_path('routes/api_routes/check.php'));

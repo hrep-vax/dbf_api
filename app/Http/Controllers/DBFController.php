@@ -7,6 +7,9 @@ use XBase\TableReader;
 use XBase\TableEditor;
 use App\Traits\ApiResponder;
 use Exception;
+use App\Models\Payee2;
+use App\Models\Payee;
+use App\Models\Check;
 
 class DBFController extends Controller
 {
@@ -20,20 +23,86 @@ class DBFController extends Controller
   {
     //show all DBF data
 
-    $table = new TableReader(resource_path('dbf\CHECKS.DBF'));
+    //$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
+    $table = new TableReader(resource_path('dbf\PAYEES.DBF'));
+    //$table = new TableReader(resource_path('dbf\med50k.DBF'));
     $records = [];
     $record_entry = [];
     $column_headers = $table->getColumns();
     while ($record = $table->nextRecord()) {
       foreach ($column_headers as $column) {
         try {
-          $record_value = $record->get($column->getName());
+          //$record_value = $record->get($column->getName());
+          //$record_value = mb_strtoupper(mb_substr($record->get($column->getName()), 0, 77));
+          ///$record_value = mb_convert_encoding($record->get($column->getName()), "UTF-8", "auto");
+          //$record_value = iconv('latin5', 'utf-8', $record->get($column->getName()));
+          ///$record_value = convert_from_latin1_to_utf8_recursively($record->get($column->getName()));
+          $record_value = utf8_encode($record->get($column->getName()));
+
+
           $record_entry[$column->getName()] = $record_value;
         } catch (Throwable $e) {
         }
       }
+
+      /// $payee = Payee2::Create([
+      ///   'code' => '01783',
+      ///   'payee1' => 'andy',
+      /// ]);
+      /// Check::insert($record_entry);
       array_push($records, $record_entry);
     }
+
+    ////Payee2::insert($records);
+    //Check::insert($records);
+    Payee::insert($records);
+
+    //////////////////////////////////////////////////////
+
+    /// foreach ($records as $check) {
+    ///   Check::insert($check);
+    /// }
+    /////////////////////////////////////////////
+    /// $table::chunk(100, function ($checks) {
+    ///   foreach ($checks as $check) {
+    ///     Check::insert($check);
+    ///   }
+    /// });
+
+    ///////////////////////////////////////
+
+    // $insert_data = collect($records); // Make a collection to use the chunk method
+
+    // // it will chunk the dataset in smaller collections containing 500 values each. 
+    // // Play with the value to get best result
+    // $chunks = $insert_data->chunk(1000);
+
+    // foreach ($chunks as $chunk) {
+    //   //\DB::table('items_details')->insert($chunk->toArray());
+    //   //Check::insert($chunk->toArray());
+    //   Payee::insert($chunk->toArray());
+    // }
+
+    //////////////////////////////////////////////////////
+
+    // $collection = collect($records);   //turn data into collection
+    // $chunks = $collection->chunk(10000); //chunk into smaller pieces
+    // $chunks->toArray(); //convert chunk to array
+
+    // //loop through chunks:
+    // foreach ($chunks as $chunk) {
+    //   //Check::insert($chunk->toArray()); //insert chunked data
+    //   Payee::insert($chunk->toArray()); //insert chunked data
+    // }
+
+    /////////////////////////////////////////////////////////////////////
+
+    /// $chunks = array_chunk($records, size: 5000);
+
+    /// foreach ($chunks as $chunk) {
+    ///   Check::insert($chunk);
+    /// }
+
     return $this->success(['dbf' => $records], 200);
   }
 
@@ -47,13 +116,14 @@ class DBFController extends Controller
   {
     // add record
     $table = new TableEditor(
-      resource_path('dbf\CHECKS.DBF'),
+      //resource_path('dbf\CHECKS.DBF'),
+      resource_path('dbf\MED50k.DBF'),
       [
         'editMode' => TableEditor::EDIT_MODE_CLONE, //default
       ]
     );
     $record = $table->appendRecord();
-    $record->set('voucher', $request->voucher);
+    /*$record->set('voucher', $request->voucher);
     $record->set('check', $request->check);
     $record->set('code', $request->code);
     $record->set('oblig', $request->oblig);
@@ -67,7 +137,12 @@ class DBFController extends Controller
     $record->set('rel_date', $request->rel_date);
     $record->set('rel_name', $request->rel_name);
     $record->set('or_number', $request->or_number);
+    $record->set('amount', $request->amount);*/
+    $record->set('code', $request->code);
     $record->set('amount', $request->amount);
+    $record->set('orno', $request->orno);
+    $record->set('duedate', $request->duedate);
+    //$record->set('date_used', $request->date_used);
     $table->writeRecord();
     $table->save();
 
@@ -83,9 +158,54 @@ class DBFController extends Controller
    */
   public function show(Request $request)
   {
-    $table = new TableReader(resource_path('dbf\CHECKS.DBF'));
 
-    $emp_id = $request->emp_id;
+    //$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
+    $table = new TableReader(resource_path('dbf\MED50k.DBF'));
+
+    // echo ($request);
+    $amount = 0;
+    $records = [];
+    $emp_id = $request['emp_id'];
+    $record_entry = [];
+    while ($record = $table->nextRecord()) {
+      $record_value = $record->get('code');
+      if ($emp_id == $record_value) {
+        /*$record_entry["voucher"] = $record->get('voucher');
+        $record_entry["check"] = $record->get('check');
+        $record_entry["code"] = $record->get('code');
+        $record_entry["oblig"] = $record->get('oblig');
+        $record_entry["obj_clas"] = $record->get('oblig');
+        $record_entry["che_date"] = $record->get('che_date');
+        $record_entry["date_sign"] = $record->get('date_sign');
+        $record_entry["rec_date"] = $record->get('rec_date');
+        $record_entry["rec_opis"] = $record->get('rec_opis');
+        $record_entry["ret_date"] = $record->get('ret_date');
+        $record_entry["ret_time"] = $record->get('ret_time');
+        $record_entry["rel_date"] = $record->get('rel_date');
+        $record_entry["rel_name"] = $record->get('rel_name');
+        $record_entry["or_number"] = $record->get('or_number');
+        $record_entry["amount"] = $record->get('amount');*/
+        $record_entry["code"] = $record->get('code');
+        $record_entry["amount"] = $record->get('amount');
+        $record_entry["orno"] = $record->get('orno');
+        $record_entry["duedate"] = $record->get('duedate');
+        $record_entry["date_used"] = $record->get('date_used');
+        $record_entry["name"]  = $this->show2($emp_id);
+        array_push($records, $record_entry);
+      }
+    }
+    //declare another array
+    //name galing sa show2;records
+    //array push
+    //$name =  $this->show2($emp_id);
+    $final_output =  $records;
+    return $this->success(["dbf" => $final_output], 200);
+
+
+    /*$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
+    //$table = new TableReader(resource_path('dbf\MEDIC2.DBF'));
+
+    $emp_id = $request->emp_id;a
 
     $records = [];
     $record_entry = [];
@@ -107,11 +227,42 @@ class DBFController extends Controller
         $record_entry["rel_name"] = $record->get('rel_name');
         $record_entry["or_number"] = $record->get('or_number');
         $record_entry["amount"] = $record->get('amount');
-        array_push($records, $record_entry);
+        /*$record_entry["code"] = $record->get('code');
+        $record_entry["amount"] = $record->get('amount');
+        $record_entry["orno"] = $record->get('orno');
+        $record_entry["duedate"] = $record->get('duedate');
+        $record_entry["date_used"] = $record->get('date_used');*/
+    /*array_push($records, $record_entry);
       }
     }
 
-    return $this->success(['dbf' => $records], 200);
+    return $this->success(['dbf' => $records], 200);*/
+  }
+
+  public function show2($id)
+  {
+
+
+    $table = new TableReader(resource_path('dbf\NAME2.DBF'));
+
+    //echo ($request);
+
+    $records2 = [];
+    $emp_id2 = $id;
+    $record_entry2 = [];
+    while ($record2 = $table->nextRecord()) {
+      $record_value2 = $record2->get('code');
+      if ($emp_id2 == $record_value2) {
+
+        $record_entry2["name"] = $record2->get('name');
+        //$record_entry2["code"] = $record2->get('code');
+
+        array_push($records2, $record_entry2);
+      }
+    }
+    //$data = "Sir Andy";
+    $data = $records2;
+    return $data;
   }
 
   /**
@@ -130,6 +281,7 @@ class DBFController extends Controller
     for ($i = 0; $i < 10; $i++) {
       $record = $table->nextRecord();
       $record->set("voucher", $request->voucher);
+      $record->set("amount", $request->amount);
 
 
       $table->writeRecord();
