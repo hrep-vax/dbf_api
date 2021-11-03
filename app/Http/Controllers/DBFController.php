@@ -34,9 +34,8 @@ class DBFController extends Controller
         try {
           //$record_value = $record->get($column->getName());
           //$record_value = mb_strtoupper(mb_substr($record->get($column->getName()), 0, 77));
-          ///$record_value = mb_convert_encoding($record->get($column->getName()), "UTF-8", "auto");
           //$record_value = iconv('latin5', 'utf-8', $record->get($column->getName()));
-          ///$record_value = convert_from_latin1_to_utf8_recursively($record->get($column->getName()));
+
           $record_value = utf8_encode($record->get($column->getName()));
 
           //comment
@@ -45,29 +44,15 @@ class DBFController extends Controller
         }
       }
 
-      /// $payee = Payee2::Create([
-      ///   'code' => '01783',
-      ///   'payee1' => 'andy',
-      /// ]);
-      /// Check::insert($record_entry);
+
       array_push($records, $record_entry);
     }
 
-    ////Payee2::insert($records);
+
     //Check::insert($records);
     Payee::insert($records);
 
-    //////////////////////////////////////////////////////
 
-    /// foreach ($records as $check) {
-    ///   Check::insert($check);
-    /// }
-    /////////////////////////////////////////////
-    /// $table::chunk(100, function ($checks) {
-    ///   foreach ($checks as $check) {
-    ///     Check::insert($check);
-    ///   }
-    /// });
 
     ///////////////////////////////////////
 
@@ -95,13 +80,6 @@ class DBFController extends Controller
     //   Payee::insert($chunk->toArray()); //insert chunked data
     // }
 
-    /////////////////////////////////////////////////////////////////////
-
-    /// $chunks = array_chunk($records, size: 5000);
-
-    /// foreach ($chunks as $chunk) {
-    ///   Check::insert($chunk);
-    /// }
 
     return $this->success(['dbf' => $records], 200);
   }
