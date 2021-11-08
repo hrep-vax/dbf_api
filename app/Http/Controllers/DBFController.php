@@ -162,6 +162,7 @@ class DBFController extends Controller
     //$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
     $table = new TableReader(resource_path('dbf\MED50k.DBF'));
 
+
     // echo ($request);
     $amount = 0;
     $records = [];
@@ -169,6 +170,7 @@ class DBFController extends Controller
     $record_entry = [];
     while ($record = $table->nextRecord()) {
       $record_value = $record->get('code');
+
       if ($emp_id == $record_value) {
         /*$record_entry["voucher"] = $record->get('voucher');
         $record_entry["check"] = $record->get('check');
