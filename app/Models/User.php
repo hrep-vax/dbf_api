@@ -75,78 +75,80 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+  use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'middle_name',
-        'email',
-        'password',
-        'mobile_number',
-        'sex',
-        'profile_picture_url',
-        'birthday',
-        'home_address',
-        'barangay',
-        'city',
-        'region'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var string[]
+   */
+  protected $fillable = [
+    'first_name',
+    'last_name',
+    'middle_name',
+    'email',
+    'password',
+    'mobile_number',
+    'sex',
+    'profile_picture_url',
+    'birthday',
+    'home_address',
+    'barangay',
+    'city',
+    'region',
+    'hrep_id'
+  ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'created_at', 'updated_at', 'roles'
-    ];
+  /**
+   * The attributes that should be hidden for serialization.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'password', 'created_at', 'updated_at', 'roles'
+  ];
 
-    /**
-     * Eager loading with a related model
-     *
-     * @var string[]
-     */
-    protected $with = ['userInfo'];
+  /**
+   * Eager loading with a related model
+   *
+   * @var string[]
+   */
+  protected $with = ['userInfo'];
 
-    /**
-     * Every User model has exactly one UserInfo
-     *
-     * @return HasOne
-     */
-    public function userInfo()
-    {
-        return $this->hasOne(UserInfo::class);
-    }
+  /**
+   * Every User model has exactly one UserInfo
+   *
+   * @return HasOne
+   */
+  public function userInfo()
+  {
+    return $this->hasOne(UserInfo::class);
+  }
 
-    /**
-     * Move the user_info fields to the root node (User).
-     * Only used when adding the model to a response
-     * @return User
-     */
-    public function flattenUserInfo()
-    {
-        $userInfo = $this->userInfo;
-        unset($this->userInfo);
+  /**
+   * Move the user_info fields to the root node (User).
+   * Only used when adding the model to a response
+   * @return User
+   */
+  public function flattenUserInfo()
+  {
+    $userInfo = $this->userInfo;
+    unset($this->userInfo);
 
-        $this->first_name =  $userInfo->first_name;
-        $this->last_name =  $userInfo->last_name;
-        $this->middle_name =  $userInfo->middle_name;
-        $this->mobile_number =  $userInfo->mobile_number;
-        $this->sex =  $userInfo->sex;
-        $this->birthday =  $userInfo->birthday;
-        $this->profile_picture_url =  $userInfo->profile_picture_url;
-        $this->home_address =  $userInfo->home_address;
-        $this->barangay =  $userInfo->barangay;
-        $this->city =  $userInfo->city;
-        $this->region =  $userInfo->region;
+    $this->first_name =  $userInfo->first_name;
+    $this->last_name =  $userInfo->last_name;
+    $this->middle_name =  $userInfo->middle_name;
+    $this->mobile_number =  $userInfo->mobile_number;
+    $this->sex =  $userInfo->sex;
+    $this->birthday =  $userInfo->birthday;
+    $this->profile_picture_url =  $userInfo->profile_picture_url;
+    $this->home_address =  $userInfo->home_address;
+    $this->barangay =  $userInfo->barangay;
+    $this->city =  $userInfo->city;
+    $this->region =  $userInfo->region;
+    $this->hrep_id =  $userInfo->hrep_id;
 
-        return $this;
-    }
+    return $this;
+  }
 }
