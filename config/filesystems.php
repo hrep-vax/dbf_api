@@ -34,11 +34,50 @@ return [
       'driver' => 'local',
       'root' => storage_path('app'),
     ],
-    'test' => [
+    'c_advice' => [
       'driver' => 'local',
-      'root' => storage_path('app/public/dbf'),
+      'root' => storage_path('app/dbf/c_advice'),
     ],
-
+    'constaff' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/constaff'),
+    ],
+    'consult' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/consult'),
+    ],
+    'special' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special'),
+    ],
+    'coterm' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/coterm'),
+    ],
+    'loyalty' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/loyalty'),
+    ],
+    'rama' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/rama'),
+    ],
+    'ramaneta' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/ramaneta'),
+    ],
+    'cont' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/loyalty/cont'),
+    ],
+    'secre' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/loyalty/secre'),
+    ],
+    'staff' => [
+      'driver' => 'local',
+      'root' => storage_path('app/dbf/special/loyalty/staff'),
+    ],
     'public' => [
       'driver' => 'local',
       'root' => storage_path('app/public'),
