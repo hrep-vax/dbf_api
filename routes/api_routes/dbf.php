@@ -12,3 +12,5 @@ Route::middleware('auth:sanctum')->post('dbf-add', [DBFController::class, 'store
 Route::middleware('auth:sanctum')->put('dbf-show', [DBFController::class, 'show'])->name('dbf-show');
 
 Route::middleware('auth:sanctum')->put('dbf-show2', [DBFController::class, 'show2'])->name('dbf-show2');
+
+Route::middleware('auth:sanctum')->post('dbf-upload', [DBFController::class, 'upload'])->name('dbf-upload');
