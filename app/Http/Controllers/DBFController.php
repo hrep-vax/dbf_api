@@ -234,7 +234,9 @@ class DBFController extends Controller
   {
     $file = $request->file('file');
     $filename = $file->getClientOriginalName(); //specify name
-    $path = $file->storeAs('public/dbf/', $filename); //identify na lang yung path sa "'public/dbf/"
+    //$path = $file->storeAs('public/dbf/', $filename); //identify na lang yung path sa "'public/dbf/"
+
+    $path = Storage::disk('test')->put($filename, '');
 
     if ($path) {
       return response()->json(['message' => 'file uploaded'], 200);
