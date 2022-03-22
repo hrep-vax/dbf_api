@@ -10,6 +10,8 @@ use Exception;
 use App\Models\Payee2;
 use App\Models\Payee;
 use App\Models\Check;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
 
 class DBFController extends Controller
 {
@@ -22,19 +24,21 @@ class DBFController extends Controller
   public function index()
   {
     //show all DBF data
-
-    //$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
-    $table = new TableReader(resource_path('dbf\PAYEES.DBF'));
+    // $table = new TableReader(resource_path("dbf\.'$name'.DBF"));
+    $table = new TableReader(resource_path('dbf\CHECKS.DBF')); // eto yung nagbabago lagi kailangan mag upload ng 
+    //user ng update sa dbf, so make sure na makukuha ng system un upload nila
+    // $table = new TableReader(resource_path('dbf\PAYEES.DBF'));
     //$table = new TableReader(resource_path('dbf\med50k.DBF'));
+    // // trigger batch process : specific time
+    // // create log file  to check records count kung nag tally sa dbf, and then unique check no.
+    // // return sucess message
     $records = [];
     $record_entry = [];
     $column_headers = $table->getColumns();
     while ($record = $table->nextRecord()) {
       foreach ($column_headers as $column) {
         try {
-          //$record_value = $record->get($column->getName());
-          //$record_value = mb_strtoupper(mb_substr($record->get($column->getName()), 0, 77));
-          //$record_value = iconv('latin5', 'utf-8', $record->get($column->getName()));
+
 
           $record_value = utf8_encode($record->get($column->getName()));
 
@@ -48,38 +52,17 @@ class DBFController extends Controller
       array_push($records, $record_entry);
     }
 
-
-    //Check::insert($records);
-    Payee::insert($records);
-
-
-
     ///////////////////////////////////////
 
-    // $insert_data = collect($records); // Make a collection to use the chunk method
+    $insert_data = collect($records); // Make a collection to use the chunk method
 
     // // it will chunk the dataset in smaller collections containing 500 values each. 
     // // Play with the value to get best result
-    // $chunks = $insert_data->chunk(1000);
+    $chunks = $insert_data->chunk(1000);
 
-    // foreach ($chunks as $chunk) {
-    //   //\DB::table('items_details')->insert($chunk->toArray());
-    //   //Check::insert($chunk->toArray());
-    //   Payee::insert($chunk->toArray());
-    // }
-
-    //////////////////////////////////////////////////////
-
-    // $collection = collect($records);   //turn data into collection
-    // $chunks = $collection->chunk(10000); //chunk into smaller pieces
-    // $chunks->toArray(); //convert chunk to array
-
-    // //loop through chunks:
-    // foreach ($chunks as $chunk) {
-    //   //Check::insert($chunk->toArray()); //insert chunked data
-    //   Payee::insert($chunk->toArray()); //insert chunked data
-    // }
-
+    foreach ($chunks as $chunk) {
+      Check::insert($chunk->toArray()); //append to exisitng database
+    }
 
     return $this->success(['dbf' => $records], 200);
   }
@@ -101,21 +84,6 @@ class DBFController extends Controller
       ]
     );
     $record = $table->appendRecord();
-    /*$record->set('voucher', $request->voucher);
-    $record->set('check', $request->check);
-    $record->set('code', $request->code);
-    $record->set('oblig', $request->oblig);
-    $record->set('obj_clas', $request->obj_clas);
-    $record->set('che_date', $request->che_date);
-    $record->set('date_sign', $request->date_sign);
-    $record->set('rec_date', $request->rec_date);
-    $record->set('rec_opis', $request->rec_opis);
-    $record->set('ret_date', $request->ret_date);
-    $record->set('ret_time', $request->ret_time);
-    $record->set('rel_date', $request->rel_date);
-    $record->set('rel_name', $request->rel_name);
-    $record->set('or_number', $request->or_number);
-    $record->set('amount', $request->amount);*/
     $record->set('code', $request->code);
     $record->set('amount', $request->amount);
     $record->set('orno', $request->orno);
@@ -139,32 +107,15 @@ class DBFController extends Controller
 
     //$table = new TableReader(resource_path('dbf\CHECKS.DBF'));
     $table = new TableReader(resource_path('dbf\MED50k.DBF'));
-
-
-    // echo ($request);
-    $amount = 0;
     $records = [];
     $emp_id = $request['emp_id'];
+
+
     $record_entry = [];
     while ($record = $table->nextRecord()) {
       $record_value = $record->get('code');
 
       if ($emp_id == $record_value) {
-        /*$record_entry["voucher"] = $record->get('voucher');
-        $record_entry["check"] = $record->get('check');
-        $record_entry["code"] = $record->get('code');
-        $record_entry["oblig"] = $record->get('oblig');
-        $record_entry["obj_clas"] = $record->get('oblig');
-        $record_entry["che_date"] = $record->get('che_date');
-        $record_entry["date_sign"] = $record->get('date_sign');
-        $record_entry["rec_date"] = $record->get('rec_date');
-        $record_entry["rec_opis"] = $record->get('rec_opis');
-        $record_entry["ret_date"] = $record->get('ret_date');
-        $record_entry["ret_time"] = $record->get('ret_time');
-        $record_entry["rel_date"] = $record->get('rel_date');
-        $record_entry["rel_name"] = $record->get('rel_name');
-        $record_entry["or_number"] = $record->get('or_number');
-        $record_entry["amount"] = $record->get('amount');*/
         $record_entry["code"] = $record->get('code');
         $record_entry["amount"] = $record->get('amount');
         $record_entry["orno"] = $record->get('orno');
@@ -225,7 +176,7 @@ class DBFController extends Controller
 
     $table = new TableReader(resource_path('dbf\NAME2.DBF'));
 
-    //echo ($request);
+    //echo ($request);3 
 
     $records2 = [];
     $emp_id2 = $id;
@@ -278,5 +229,17 @@ class DBFController extends Controller
   public function destroy($id)
   {
     //
+  }
+  public function upload(Request $request)
+  {
+    $file = $request->file('file');
+    $filename = $file->getClientOriginalName(); //specify name
+    $path = $file->storeAs('public/dbf/', $filename); //identify na lang yung path sa "'public/dbf/"
+
+    if ($path) {
+      return response()->json(['message' => 'file uploaded'], 200);
+    } else {
+      return response()->json(['message' => 'file upload error'], 503);
+    }
   }
 }
