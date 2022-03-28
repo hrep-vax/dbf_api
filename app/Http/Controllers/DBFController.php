@@ -10,6 +10,7 @@ use Exception;
 use App\Models\Payee2;
 use App\Models\Payee;
 use App\Models\Check;
+use App\Models\Checks_record;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 
@@ -21,17 +22,32 @@ class DBFController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(String $filename)
   {
     //show all DBF data
+    //$table = new TableReader(resource_path('dbf\special\ramaneta\JAN22.DBF'));
+    //$table = new TableReader(resource_path('dbf\special\rata\jan22.DBF'));
+    // $table = new TableReader(resource_path('dbf\special\rata\feb22.DBF'));
+    //$table = new TableReader(resource_path('dbf\special\rata\mar22.DBF'));
+    $table = new TableReader(storage_path('app\\' . $filename));
+
     // $table = new TableReader(resource_path("dbf\.'$name'.DBF"));
-    $table = new TableReader(resource_path('dbf\CHECKS.DBF')); // eto yung nagbabago lagi kailangan mag upload ng 
+    //$table = new TableReader(resource_path('dbf\CHECKS.DBF')); // eto yung nagbabago lagi kailangan mag upload ng 
     //user ng update sa dbf, so make sure na makukuha ng system un upload nila
     // $table = new TableReader(resource_path('dbf\PAYEES.DBF'));
     //$table = new TableReader(resource_path('dbf\med50k.DBF'));
     // // trigger batch process : specific time
     // // create log file  to check records count kung nag tally sa dbf, and then unique check no.
     // // return sucess message
+    // $path = Storage::disk('public')->path($filename);
+    // $resource_path = Storage::disk($foldername)->path($filename); //check if file exist
+
+    //$resource_path = Storage::path($filename);
+    // $table = new TableReader(storage_path($resource_path));
+    //$table = new TableReader(storage_path('dbf\c_advice\c_advice.DBF'));
+    // $filename = 'c_advice.dbf';
+    //$table = new TableReader(storage_path('app\\dbf\\c_advice\\c_advice.dbf'));
+
     $records = [];
     $record_entry = [];
     $column_headers = $table->getColumns();
@@ -53,6 +69,9 @@ class DBFController extends Controller
     }
 
     ///////////////////////////////////////
+    //Check::insert($records);
+    //Payee::insert($records);
+    //Checks_record::insert($records);
 
     $insert_data = collect($records); // Make a collection to use the chunk method
 
@@ -61,7 +80,8 @@ class DBFController extends Controller
     $chunks = $insert_data->chunk(1000);
 
     foreach ($chunks as $chunk) {
-      Check::insert($chunk->toArray()); //append to exisitng database
+      //Check::insert($chunk->toArray()); //append to exisitng database
+      Checks_record::insert($chunk->toArray());
     }
 
     return $this->success(['dbf' => $records], 200);
@@ -236,9 +256,19 @@ class DBFController extends Controller
     $filename = $file->getClientOriginalName();
     $foldername = $request->foldername;
 
-    $path = Storage::disk($foldername)->put($filename, '');
+    //$path = Storage::disk('local')->put($foldername, $file);
+    $path = Storage::disk('local')->put($filename, file_get_contents($file));
 
+    // Manually specify a filename...
+    //$path = Storage::putFileAs('photos', new File('/path/to/photo'), 'photo.jpg');
+    //$path = Storage::putFileAs('dbf', new File('storage/app'), $filename);
+    // $path = Storage::putFile($file, new File('local'));
+    //$path = Storage::put($filename, $file);
+
+    // $path = $file->put($filename);
+    //$path = $file->storeAs('resources/dbf/', $filename); 
     if ($path) {
+      self::index($filename); //send folder name and file name to convert
       return response()->json(['message' => 'file uploaded'], 200);
     } else {
       return response()->json(['message' => 'file upload error'], 503);

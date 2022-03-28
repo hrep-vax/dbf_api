@@ -10,6 +10,10 @@ use App\Models\Check;
 
 use App\Models\Payee;
 
+use App\Models\Checks_record;
+
+use App\Models\User;
+
 use DB;
 
 
@@ -49,9 +53,15 @@ class CheckController extends Controller
   public function show(Request $request)
   {
     $code = $request['emp_id'];
-    $checks = Check::join('payees', 'checks.code', '=', 'payees.code')
-      ->where('checks.code', '=', $code)
-      ->get(['checks.*', 'payees.payee1']);
+    $checks = Checks_record::join('users', 'checks_records.hrep_id', '=', 'users.hrep_id')
+      ->where('checks_records.hrep_id', '=', $code)
+      ->get(['checks_records.*', 'users.*']);
+    // $checks = Check::join('payees', 'checks.code', '=', 'payees.code')
+    // ->where('checks.code', '=', $code)
+    //   ->get(['checks.*', 'payees.payee1']); 
+
+
+
     //$checks = Check::select('payees.*')->join('checks', 'checks.code', '=', 'payees.code');
     //$checks = Check::where('code', '=', $code)
     //->where('payee', function ($query) use ($code) {

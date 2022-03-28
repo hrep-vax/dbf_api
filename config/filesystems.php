@@ -29,6 +29,10 @@ return [
     */
 
   'disks' => [
+    'c_advice_resource' => [
+      'driver' => 'local',
+      'root' => base_path('resources'),
+    ],
 
     'local' => [
       'driver' => 'local',
