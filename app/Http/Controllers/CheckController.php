@@ -53,9 +53,14 @@ class CheckController extends Controller
   public function show(Request $request)
   {
     $code = $request['emp_id'];
-    $checks = Checks_record::join('users', 'checks_records.hrep_id', '=', 'users.hrep_id')
-      ->where('checks_records.hrep_id', '=', $code)
-      ->get(['checks_records.*', 'users.*']);
+
+    $checks = Checks_record::where('checks_records.hrep_id', '=', $code)
+      ->get(['checks_records.*']);
+
+    // $checks = Checks_record::join('users', 'checks_records.hrep_id', '=', 'users.hrep_id')
+    //   ->where('checks_records.hrep_id', '=', $code)
+    //   ->get(['checks_records.*', 'users.*']);
+
     // $checks = Check::join('payees', 'checks.code', '=', 'payees.code')
     // ->where('checks.code', '=', $code)
     //   ->get(['checks.*', 'payees.payee1']); 
