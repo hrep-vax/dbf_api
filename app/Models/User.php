@@ -84,20 +84,22 @@ class User extends Authenticatable
    * @var string[]
    */
   protected $fillable = [
-    'first_name',
-    'last_name',
-    'middle_name',
-    'email',
+    // 'first_name',
+    // 'last_name',
+    // 'middle_name',
+    // 'email',
+    //'password',
+    // 'mobile_number',
+    // 'sex',
+    // 'profile_picture_url',
+    // 'birthday',
+    // 'home_address',
+    // 'barangay',
+    // 'city',
+    // 'region',
+    'hrep_id',
     'password',
-    'mobile_number',
-    'sex',
-    'profile_picture_url',
-    'birthday',
-    'home_address',
-    'barangay',
-    'city',
-    'region',
-    'hrep_id'
+    'user_roles'
   ];
 
   /**
@@ -136,18 +138,22 @@ class User extends Authenticatable
     $userInfo = $this->userInfo;
     unset($this->userInfo);
 
-    $this->first_name =  $userInfo->first_name;
-    $this->last_name =  $userInfo->last_name;
-    $this->middle_name =  $userInfo->middle_name;
-    $this->mobile_number =  $userInfo->mobile_number;
-    $this->sex =  $userInfo->sex;
-    $this->birthday =  $userInfo->birthday;
-    $this->profile_picture_url =  $userInfo->profile_picture_url;
-    $this->home_address =  $userInfo->home_address;
-    $this->barangay =  $userInfo->barangay;
-    $this->city =  $userInfo->city;
-    $this->region =  $userInfo->region;
-    $this->hrep_id =  $userInfo->hrep_id;
+    // $this->user_id =  $userInfo->["id"];
+    // $this->first_name =  $userInfo->first_name;
+    // $this->last_name =  $userInfo->last_name;
+    // $this->middle_name =  $userInfo->middle_name;
+    // $this->email =  $userInfo->email;
+    // $this->mobile_number =  $userInfo->mobile_number;
+    // $this->office_id =  $userInfo->office_id;
+    // $this->sex =  $userInfo->sex;
+    // $this->profile_picture_url =  $userInfo->profile_picture_url;
+    // $this->id_picture_url =  $userInfo->id_picture_url;
+    // $this->birthday =  $userInfo->birthday;
+    // $this->home_address =  $userInfo->home_address;
+    // $this->barangay =  $userInfo->barangay;
+    // $this->city =  $userInfo->city;
+    // $this->region =  $userInfo->region;
+    //  $this->user_roles =  $userInfo->user_roles;
 
     return $this;
   }

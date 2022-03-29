@@ -49,43 +49,47 @@ use Illuminate\Support\Carbon;
  */
 class UserInfo extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var string[]
-     */
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'middle_name',
-        'mobile_number',
-        'sex',
-        'profile_picture_url',
-        'birthday',
-        'home_address',
-        'barangay',
-        'city',
-        'region'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var string[]
+   */
+  protected $fillable = [
+    'first_name',
+    'last_name',
+    'middle_name',
+    'email',
+    'mobile_number',
+    'office_id',
+    'sex',
+    'profile_picture_url',
+    'id_picture_url',
+    'birthday',
+    'home_address',
+    'barangay',
+    'city',
+    'region'
+    //define fields na nasa userinfo table
+  ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'id', 'user_id', 'created_at', 'updated_at'
-    ];
+  /**
+   * The attributes that should be hidden for serialization.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'id', 'user_id', 'created_at', 'updated_at'
+  ];
 
-    /**
-     * UserInfo belongs to a User
-     *
-     * @return BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+  /**
+   * UserInfo belongs to a User
+   *
+   * @return BelongsTo
+   */
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }
