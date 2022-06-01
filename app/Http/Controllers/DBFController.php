@@ -25,28 +25,10 @@ class DBFController extends Controller
   public function index(String $filename)
   {
     //show all DBF data
-    //$table = new TableReader(resource_path('dbf\special\ramaneta\JAN22.DBF'));
-    //$table = new TableReader(resource_path('dbf\special\rata\jan22.DBF'));
-    // $table = new TableReader(resource_path('dbf\special\rata\feb22.DBF'));
-    //$table = new TableReader(resource_path('dbf\special\rata\mar22.DBF'));
-    $table = new TableReader(storage_path('app\\' . $filename));
 
-    // $table = new TableReader(resource_path("dbf\.'$name'.DBF"));
-    //$table = new TableReader(resource_path('dbf\CHECKS.DBF')); // eto yung nagbabago lagi kailangan mag upload ng 
-    //user ng update sa dbf, so make sure na makukuha ng system un upload nila
-    // $table = new TableReader(resource_path('dbf\PAYEES.DBF'));
-    //$table = new TableReader(resource_path('dbf\med50k.DBF'));
-    // // trigger batch process : specific time
-    // // create log file  to check records count kung nag tally sa dbf, and then unique check no.
-    // // return sucess message
-    // $path = Storage::disk('public')->path($filename);
-    // $resource_path = Storage::disk($foldername)->path($filename); //check if file exist
+    // $table = new TableReader(storage_path('app\\' . $filename));
+    $table = new TableReader(storage_path('app/' . $filename));
 
-    //$resource_path = Storage::path($filename);
-    // $table = new TableReader(storage_path($resource_path));
-    //$table = new TableReader(storage_path('dbf\c_advice\c_advice.DBF'));
-    // $filename = 'c_advice.dbf';
-    //$table = new TableReader(storage_path('app\\dbf\\c_advice\\c_advice.dbf'));
 
     $records = [];
     $record_entry = [];
